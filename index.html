@@ -70,6 +70,18 @@
             overflow: hidden;
         }
 
+        .iframe-scroll-container {
+            width: 100%; height: 100%;
+            overflow-y: auto; 
+            overflow-x: hidden;
+            position: relative; z-index: 1;
+            display: none;
+        }
+
+        .iframe-scroll-container.active-container {
+            display: block;
+        }
+
         .glass-overlay, .glass-overlayW {
             position: absolute;
             top: 0; left: 0; 
@@ -86,18 +98,6 @@
         
         .glass-overlayW {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='280'%3E%3Cstyle%3E .txt %7B font-family: sans-serif; text-anchor: middle; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.5)); %7D %3C/style%3E%3Cg transform='rotate(-25, 175, 140)'%3E%3Ctext x='50%25' y='30%25' fill='rgba(100,100,100,0.25)' font-size='13' class='txt'%3E本圖表作者不同意任何形式之轉載%3C/text%3E%3Ctext x='50%25' y='42%25' fill='rgba(100,100,100,0.25)' font-size='13' class='txt'%3E圖表製作需時，請尊重智慧財產權。%3C/text%3E%3Ctext x='50%25' y='54%25' fill='rgba(56,189,248,0.25)' font-size='14' font-weight='bold' class='txt'%3EPowered by Hubert.%3C/text%3E%3Ctext x='50%25' y='66%25' fill='rgba(100,100,100,0.25)' font-size='12' class='txt'%3E圖表載入需時，請稍候。%3C/text%3E%3C/g%3E%3C/svg%3E");
-        }
-        
-        .iframe-scroll-container {
-            width: 100%; height: 100%;
-            overflow-y: auto; 
-            overflow-x: hidden;
-            position: relative; z-index: 1;
-            display: none;
-        }
-
-        .iframe-scroll-container.active-container {
-            display: block;
         }
 
         iframe {
@@ -125,15 +125,16 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            /* 1. 使用 flex 確保子元素能撐開容器並保留右側邊距 */
+            /* 強制撐開內容寬度以容納圖例 */
             .tab-content.active {
-                display: inline-block; /* 改為行內區塊，讓寬度能被內容撐開 */
-                padding-right: 40px;   /* 關鍵：給予右側 40px 的緩衝緩衝，防止資訊切掉 */
+                display: block;
+                width: 1800px; /* 足夠大的寬度防止圖例被切 */
+                padding-right: 60px; /* 右側緩衝 */
             }
 
-            /* 2. 強制設定內容寬度 */
+            /* 讓 iframe 與 浮水印 同時撐開 */
             iframe, .glass-overlay, .glass-overlayW {
-                width: 950px !important; /* 稍微增加寬度 */
+                width: 1100px !important;
             }
 
             iframe { height: 1200px; }
