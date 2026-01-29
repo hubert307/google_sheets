@@ -9,213 +9,128 @@
            1. 全域變數定義 (CSS Variables)
            ============================================================ */
         :root {
-            --bg-color: #0f172a;       /* 頁面背景色 */
-            --chart-bg: #111827;       /* 圖表容器背景色 */
-            --card-bg: #1e293b;        /* 按鈕預設背景色 */
-            --primary: #38bdf8;        /* 主題藍色 (Active 狀態) */
+            --bg-color: #0f172a;       /* 頁面背景深藍色 */
+            --chart-bg: #111827;       /* 圖表區域背景 */
+            --card-bg: #1e293b;        /* 按鈕未選中時的背景 */
+            --primary: #38bdf8;        /* 亮藍色主題 */
             --primary-glow: rgba(56, 189, 248, 0.3);
-            --text-main: #f8fafc;      /* 主要文字顏色 */
-            --text-dim: #94a3b8;       /* 次要/暗淡文字顏色 */
+            --text-main: #f8fafc;      /* 主文字色 */
+            --text-dim: #94a3b8;       /* 暗淡文字色 */
             
-            /* 捲軸顏色自定義 (暗色系) */
+            /* 暗色系捲軸樣式變數 */
             --scrollbar-track: #0f172a;
             --scrollbar-thumb: #334155;
             --scrollbar-thumb-hover: #475569;
         }
 
         /* ============================================================
-           2. 捲軸樣式修正 (Cross-browser Scrollbar)
+           2. 捲軸樣式修正 (全域暗色化)
            ============================================================ */
-        /* Firefox 捲軸支援 */
         * {
-            scrollbar-width: thin;
+            scrollbar-width: thin; /* Firefox */
             scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
         }
 
-        /* Chrome, Edge, Safari (Webkit) 捲軸支援 */
-        ::-webkit-scrollbar {
-            width: 6px;  /* 垂直捲軸寬度 */
-            height: 6px; /* 水平捲軸高度 */
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--scrollbar-track);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--scrollbar-thumb);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--scrollbar-thumb-hover);
-        }
+        /* Chrome, Safari, Edge 捲軸 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
         /* ============================================================
-           3. 基礎佈局設計
+           3. 主佈局樣式
            ============================================================ */
         body {
             background-color: var(--bg-color);
             margin: 0; padding: 20px;
             font-family: 'Inter', -apple-system, 'Microsoft JhengHei', sans-serif;
             color: var(--text-main);
-            height: 100vh;             /* 強制充滿視窗高度 */
-            display: flex; 
-            flex-direction: column;
+            height: 100vh;
+            display: flex; flex-direction: column;
             box-sizing: border-box;
-            overflow: hidden;          /* 防止 body 出現捲軸 */
-            user-select: none;         /* 禁止反白文字 */
+            overflow: hidden;
+            user-select: none;
             -webkit-user-select: none;
         }
 
-        /* 主網格佈局：側邊欄 + 圖表區 */
         .main-layout {
             display: grid;
-            grid-template-columns: 220px 1fr; /* 側邊欄寬度固定 220px */
+            grid-template-columns: 220px 1fr; /* 側邊欄固定寬度 */
             gap: 20px;
-            flex-grow: 1;              /* 填滿剩餘空間 */
-            min-height: 0;             /* 關鍵：防止內容撐開高度導致溢出 */
+            flex-grow: 1;
+            min-height: 0;
         }
 
-        /* 側邊欄：按鈕清單 */
         .sidebar {
-            display: flex; 
-            flex-direction: column;
-            gap: 8px; 
-            overflow-y: auto;          /* 按鈕過多時可垂直滾動 */
-            padding-right: 8px;
+            display: flex; flex-direction: column;
+            gap: 8px; overflow-y: auto; padding-right: 8px;
         }
 
-        /* 分頁按鈕樣式 */
         .tab-btn {
             background-color: var(--card-bg);
             color: var(--text-dim);
             border: 1px solid rgba(255,255,255,0.05);
-            padding: 0 16px; 
-            min-height: 44px; 
-            border-radius: 10px;
-            cursor: pointer; 
-            font-size: 0.85rem;
+            padding: 0 16px; min-height: 44px; border-radius: 10px;
+            cursor: pointer; font-size: 0.85rem;
             text-align: left;
-            display: flex; 
-            align-items: center;
+            display: flex; align-items: center;
             transition: all 0.25s ease;
             white-space: nowrap;
-            touch-action: manipulation;
         }
 
-        /* 按鈕選中狀態 (Active) */
+        /* 按鈕啟動狀態：變為亮藍色並向右微移 */
         .tab-btn.active {
             background: linear-gradient(135deg, #7dd3fc 0%, var(--primary) 100%);
-            color: #0f172a; 
-            font-weight: 800; 
-            transform: translateX(5px); /* 選中時向右微偏 */
+            color: #0f172a; font-weight: 800; transform: translateX(5px);
             box-shadow: 0 4px 12px var(--primary-glow);
         }
 
-        /* ============================================================
-           4. 圖表顯示區樣式
-           ============================================================ */
         .chart-wrapper {
             background: var(--chart-bg);
             border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.1);
             height: 100%;
-            position: relative;        /* 為了讓浮水印 Overlay 能絕對定位於此 */
+            position: relative;
             overflow: hidden;
         }
 
-        /* 圖表捲動容器：控制 iframe 的溢出與顯示 */
+        /* 滾動容器：包裹圖表與浮水印 */
         .iframe-scroll-container {
-            width: 100%; 
-            height: 100%;
-            overflow-y: auto; 
-            overflow-x: hidden;
-            position: relative; 
-            z-index: 1;
-            display: none;             /* 預設隱藏 */
-        }
-
-        /* 當前活動中的容器 */
-        .iframe-scroll-container.active-container {
-            display: block;
-        }
-
-        /* 浮水印層 (防盜用 & 載入提示) */
-        .glass-overlay, .glass-overlayW {
-            position: absolute;
-            top: 0; left: 0; 
             width: 100%; height: 100%;
-            z-index: 100;              /* 位於 iframe 之上 */
-            pointer-events: auto;      /* 接收滑鼠事件以處理捲動傳遞 */
-            background-repeat: repeat;
-            transition: opacity 0.4s ease;
+            overflow-y: auto; overflow-x: hidden;
+            position: relative; z-index: 1;
+            display: none;
         }
 
-        /* 深色圖表專用浮水印 (SVG 背景) */
-        .glass-overlay {
-            background-image: url("data:image/svg+xml,...");
-        }
-        
-        /* 其他圖表專用浮水印 (灰色字) */
-        .glass-overlayW {
-            background-image: url("data:image/svg+xml,...");
+        .iframe-scroll-container.active-container { display: block; }
+
+        .glass-overlay, .glass-overlayW {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 100; pointer-events: auto;
         }
 
-        iframe {
-            width: 100%; 
-            height: 1600px;            /* 設定較大的高度以確保 Google 試算表內容完整 */
-            border: none; 
-            display: block; 
-            background: #111827;
-        }
+        /* 浮水印文字：使用 base64 SVG */
+        .glass-overlay { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='280'%3E%3Cstyle%3E .txt %7B font-family: sans-serif; text-anchor: middle; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.5)); %7D %3C/style%3E%3Cg transform='rotate(-25, 175, 140)'%3E%3Ctext x='50%25' y='30%25' fill='rgba(255,255,255,0.18)' font-size='13' class='txt'%3E本圖表作者不同意任何形式之轉載%3C/text%3E%3Ctext x='50%25' y='42%25' fill='rgba(255,255,255,0.18)' font-size='13' class='txt'%3E圖表製作需時，請尊重智慧財產權。%3C/text%3E%3Ctext x='50%25' y='54%25' fill='rgba(56,189,248,0.25)' font-size='14' font-weight='bold' class='txt'%3EPowered by Hubert.%3C/text%3E%3Ctext x='50%25' y='66%25' fill='rgba(255,255,255,0.15)' font-size='12' class='txt'%3E圖表載入需時，請稍候。%3C/text%3E%3C/g%3E%3C/svg%3E"); }
+        .glass-overlayW { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='280'%3E%3Cstyle%3E .txt %7B font-family: sans-serif; text-anchor: middle; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.5)); %7D %3C/style%3E%3Cg transform='rotate(-25, 175, 140)'%3E%3Ctext x='50%25' y='30%25' fill='rgba(100,100,100,0.25)' font-size='13' class='txt'%3E本圖表作者不同意任何形式之轉載%3C/text%3E%3Ctext x='50%25' y='42%25' fill='rgba(100,100,100,0.25)' font-size='13' class='txt'%3E圖表製作需時，請尊重智慧財產權。%3C/text%3E%3Ctext x='50%25' y='54%25' fill='rgba(56,189,248,0.25)' font-size='14' font-weight='bold' class='txt'%3EPowered by Hubert.%3C/text%3E%3Ctext x='50%25' y='66%25' fill='rgba(100,100,100,0.25)' font-size='12' class='txt'%3E圖表載入需時，請稍候。%3C/text%3E%3C/g%3E%3C/svg%3E"); }
 
-        /* 切換分頁的顯示邏輯 */
+        iframe { width: 100%; height: 1600px; border: none; display: block; background: #111827; }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
         /* ============================================================
-           5. 響應式設計 (Mobile Responsive)
+           4. 行動端適配 (Mobile)
            ============================================================ */
         @media (max-width: 768px) {
             body { padding: 10px; overflow: hidden; }
-
-            /* 手機版改為上下佈局：按鈕在上，圖表在下 */
-            .main-layout { 
-                grid-template-columns: 1fr; 
-                grid-template-rows: auto 1fr; 
-                gap: 12px; 
-            }
-
-            /* 手機版側邊欄改為水平橫向捲動 */
-            .sidebar { 
-                flex-direction: row; 
-                padding-bottom: 8px; 
-                overflow-x: auto; 
-                -webkit-overflow-scrolling: touch; 
-            }
-            .sidebar::-webkit-scrollbar { height: 4px; } /* 橫向捲軸高度 */
-            
+            .main-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; gap: 12px; }
+            .sidebar { flex-direction: row; padding-bottom: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .sidebar::-webkit-scrollbar { height: 4px; }
             .tab-btn { min-height: 38px; padding: 0 12px; font-size: 0.8rem; border-radius: 8px; }
-            
-            /* 手機版允許左右捲動查看完整寬度圖表 */
-            .iframe-scroll-container {
-                overflow-x: auto !important; 
-                -webkit-overflow-scrolling: touch;
-            }
-
-            /* 強制撐開寬度，解決 Google 圖表圖例被切掉的問題 */
-            .tab-content.active {
-                display: block;
-                width: 2200px; 
-                padding-right: 60px; 
-            }
-
-            iframe, .glass-overlay, .glass-overlayW {
-                width: 2200px !important;
-            }
-
-            iframe { height: 1200px; } /* 手機版降低高度以利操作 */
+            .iframe-scroll-container { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+            .tab-content.active { display: block; width: 2200px; padding-right: 60px; }
+            iframe, .glass-overlay, .glass-overlayW { width: 2200px !important; }
+            iframe { height: 1200px; }
         }
     </style>
 </head>
@@ -225,77 +140,93 @@
     <div class="sidebar">
         <button class="tab-btn active" onclick="openTab(event, 'c1')">📊 2026 含息報酬</button>
         <button class="tab-btn" onclick="openTab(event, 'c2')">📈 積>40% 含息報酬</button>
+        <button class="tab-btn" onclick="openTab(event, 'c3')">📅 過去半年不含息報酬</button>
+        <button class="tab-btn" onclick="openTab(event, 'c4')">📅 過去一季不含息報酬</button>
+        <button class="tab-btn" onclick="openTab(event, 'c5')">📅 過去一月不含息報酬</button>
+        <button class="tab-btn" onclick="openTab(event, 'c6')">📅 過去一週不含息報酬</button>
+        <button class="tab-btn" onclick="openTab(event, 'c8')">🚀 主動式 ETF 含息報酬</button>
+        <button class="tab-btn" onclick="openTab(event, 'c9')">💰 高股息 ETF 含息報酬</button>
+        <button class="tab-btn" onclick="openTab(event, 'c10')">💎 金融股含息報酬</button>
+        <button class="tab-btn" onclick="openTab(event, 'c11')">⚔️ 主動 50 vs 0050</button>
+        <button class="tab-btn" onclick="openTab(event, 'c12')">🕒 30 日市場比較</button>
+        <button class="tab-btn" onclick="openTab(event, 'c13')">🔥 30 日主動報酬 A</button>
+        <button class="tab-btn" onclick="openTab(event, 'c14')">⚡ 30 日主動報酬 B</button>
+        <button class="tab-btn" onclick="openTab(event, 'c15')">🏆 00981A 上市至今</button>
         <button class="tab-btn" onclick="openTab(event, 'c16')">🆚 00981A vs 2330</button>
     </div>
 
     <div class="chart-wrapper">
         <div class="iframe-scroll-container active-container" id="scrollContainer">
             <div class="glass-overlay" id="overlayA"></div>
-            <div id="c1" class="tab-content active">
-                <iframe src="https://docs.google.com/spreadsheets/d/e/..."></iframe>
-            </div>
-            </div>
+            <div id="c1" class="tab-content active"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQDwpQr-X9mvTYDpZfm3nc7dVGm7sDh8_oWdyLKOB6N7V63cgIna06srvw313pIj1TPKiwwaBf98vni/pubchart?oid=794297250&format=interactive"></iframe></div>
+            <div id="c2" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQDwpQr-X9mvTYDpZfm3nc7dVGm7sDh8_oWdyLKOB6N7V63cgIna06srvw313pIj1TPKiwwaBf98vni/pubchart?oid=1241751168&format=interactive"></iframe></div>
+            <div id="c3" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQDwpQr-X9mvTYDpZfm3nc7dVGm7sDh8_oWdyLKOB6N7V63cgIna06srvw313pIj1TPKiwwaBf98vni/pubchart?oid=837622830&format=interactive"></iframe></div>
+            <div id="c4" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQDwpQr-X9mvTYDpZfm3nc7dVGm7sDh8_oWdyLKOB6N7V63cgIna06srvw313pIj1TPKiwwaBf98vni/pubchart?oid=1395956254&format=interactive"></iframe></div>
+            <div id="c5" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQDwpQr-X9mvTYDpZfm3nc7dVGm7sDh8_oWdyLKOB6N7V63cgIna06srvw313pIj1TPKiwwaBf98vni/pubchart?oid=1018938871&format=interactive"></iframe></div>
+            <div id="c6" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQDwpQr-X9mvTYDpZfm3nc7dVGm7sDh8_oWdyLKOB6N7V63cgIna06srvw313pIj1TPKiwwaBf98vni/pubchart?oid=1203358661&format=interactive"></iframe></div>
+            <div id="c8" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQDwpQr-X9mvTYDpZfm3nc7dVGm7sDh8_oWdyLKOB6N7V63cgIna06srvw313pIj1TPKiwwaBf98vni/pubchart?oid=1605904927&format=interactive"></iframe></div>
+            <div id="c9" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQDwpQr-X9mvTYDpZfm3nc7dVGm7sDh8_oWdyLKOB6N7V63cgIna06srvw313pIj1TPKiwwaBf98vni/pubchart?oid=724588490&format=interactive"></iframe></div>
+            <div id="c10" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSuFza95Pe7RT4Wic9C4gRNf0uqVVck6ZuzeTO4lH3GdOHWUxiEO_xCiOJ6ZoqB2b3QxlvAf3Te2Tlt/pubchart?oid=536831361&format=interactive"></iframe></div>
+        </div>
 
         <div class="iframe-scroll-container" id="scrollContainerW">
             <div class="glass-overlayW" id="overlayB"></div>
-            <div id="c11" class="tab-content">
-                <iframe src="https://docs.google.com/spreadsheets/d/e/..."></iframe>
-            </div>
-            </div>
+            <div id="c11" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSo2x6HTEkacBoyZBrEBwr1VBibdpX1ehWEGBCfq52pINjkURwpLXXNvIB68ioPDGNQ745gAl97rsQg/pubchart?oid=1984055927&format=interactive"></iframe></div>
+            <div id="c12" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR3H9LKYiCGobm1kQjU9nE4qh4GviMrxZ1nvlId9W7yfRNT8IPe_QWmkYIXQm7Kc_yYS8o6P-mBQqBg/pubchart?oid=1731505501&format=interactive"></iframe></div>
+            <div id="c13" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSSEncgE-SVG9Hjf0reYGmGJSKXRmjgapq88Fjls6vmiTRsF-cK7oLXIuizlzYf9FnZqE5aW9vIsrzg/pubchart?oid=1731505501&format=interactive"></iframe></div>
+            <div id="c14" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSSEncgE-SVG9Hjf0reYGmGJSKXRmjgapq88Fjls6vmiTRsF-cK7oLXIuizlzYf9FnZqE5aW9vIsrzg/pubchart?oid=1141223044&format=interactive"></iframe></div>
+            <div id="c15" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-3pGtU-6gkhfrsZ0o4SbxZtltxUhGzCHriwGc1ZMsCuAGCNdOqx6P3kJq1ONgmDy710he_v5LpnhS/pubchart?oid=1984055927&format=interactive"></iframe></div>
+            <div id="c16" class="tab-content"><iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-3pGtU-6gkhfrsZ0o4SbxZtltxUhGzCHriwGc1ZMsCuAGCNdOqx6P3kJq1ONgmDy710he_v5LpnhS/pubchart?oid=2067032644&format=interactive"></iframe></div>
+        </div>
     </div>
 </div>
 
 <script>
     /* ============================================================
-       6. JavaScript 交互邏輯
+       5. JavaScript 邏輯補全
        ============================================================ */
-    
     const containerA = document.getElementById('scrollContainer');
     const containerB = document.getElementById('scrollContainerW');
 
-    /**
-     * 處理捲動傳遞：
-     * 由於浮水印層 (Overlay) 在 iframe 之上，會攔截滑鼠捲動。
-     * 此函數捕捉 Overlay 的捲動事件，手動將位移量套用到下方的容器。
-     */
+    // 處理浮水印覆蓋導致無法捲動的問題：手動轉發捲動量
     const handleWheel = (e, container) => {
         container.scrollTop += e.deltaY;
         container.scrollLeft += e.deltaX;
-        e.preventDefault(); // 防止網頁整體捲動
+        e.preventDefault();
     };
 
-    // 綁定捲動監聽
     document.getElementById('overlayA').addEventListener('wheel', (e) => handleWheel(e, containerA), { passive: false });
     document.getElementById('overlayB').addEventListener('wheel', (e) => handleWheel(e, containerB), { passive: false });
 
     /**
-     * 切換分頁邏輯
+     * 切換圖表分頁
      * @param {Event} evt - 點擊事件
-     * @param {string} chartId - 要顯示的圖表 ID
+     * @param {string} chartId - 目標圖表的 ID
      */
     function openTab(evt, chartId) {
-        // 1. 清除所有分頁與按鈕的活動狀態
+        // 隱藏所有內容
         document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        // 取消所有按鈕的高亮
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
 
-        // 2. 判斷目標屬於哪一個大容器 (A 組或 B 組)
+        // 分類容器 A/B
         const isGroupB = ['c11', 'c12', 'c13', 'c14', 'c15', 'c16'].includes(chartId);
         const targetContainer = isGroupB ? containerB : containerA;
         const otherContainer = isGroupB ? containerA : containerB;
 
-        // 3. 切換容器顯示
+        // 切換可見容器
         otherContainer.classList.remove("active-container");
         targetContainer.classList.add("active-container");
         
-        // 4. 重置捲動位置到最頂端
+        // 重置該容器的滾動位置到左上角
         targetContainer.scrollTop = 0;
         targetContainer.scrollLeft = 0;
 
-        // 5. 顯示目標分頁內容並高亮按鈕
+        // 顯示被點擊的分頁並高亮對應按鈕
         document.getElementById(chartId).classList.add("active");
         evt.currentTarget.classList.add("active");
 
-        // 6. 手機版優化：點擊按鈕後自動將該按鈕置中顯示
+        // 手機版：讓被點選的按鈕自動滾動到螢幕中間
         if (window.innerWidth <= 768) {
             evt.currentTarget.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         }
