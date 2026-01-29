@@ -13,6 +13,35 @@
             --primary-glow: rgba(56, 189, 248, 0.3);
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
+            /* 捲軸顏色定義 */
+            --scrollbar-track: #0f172a;
+            --scrollbar-thumb: #334155;
+            --scrollbar-thumb-hover: #475569;
+        }
+
+        /* --- 全域深色捲軸樣式修正 --- */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        }
+
+        /* Chrome, Edge, Safari 捲軸樣式 */
+        ::-webkit-scrollbar {
+            width: 6px;  /* 垂直捲軸寬度 */
+            height: 6px; /* 水平捲軸高度 */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
         }
 
         body {
@@ -39,7 +68,6 @@
         .sidebar {
             display: flex; flex-direction: column;
             gap: 8px; overflow-y: auto; padding-right: 8px;
-            scrollbar-width: thin;
         }
 
         .tab-btn {
@@ -116,32 +144,28 @@
                 flex-direction: row; padding-bottom: 8px; 
                 overflow-x: auto; -webkit-overflow-scrolling: touch; 
             }
-            .sidebar::-webkit-scrollbar { display: none; }
+            /* 手機版導覽列專用捲軸高度 */
+            .sidebar::-webkit-scrollbar { height: 4px; }
+            
             .tab-btn { min-height: 38px; padding: 0 12px; font-size: 0.8rem; border-radius: 8px; }
             
-            /* 行動端核心修正 */
             .iframe-scroll-container {
                 overflow-x: auto !important; 
                 -webkit-overflow-scrolling: touch;
             }
 
-            /* 強制撐開內容寬度以容納圖例 */
             .tab-content.active {
                 display: block;
-                width: 2200px; /* 足夠大的寬度防止圖例被切 */
-                padding-right: 60px; /* 右側緩衝 */
+                width: 2200px; 
+                padding-right: 60px; 
             }
 
-            /* 讓 iframe 與 浮水印 同時撐開 */
             iframe, .glass-overlay, .glass-overlayW {
                 width: 2200px !important;
             }
 
             iframe { height: 1200px; }
         }
-        
-        .sidebar::-webkit-scrollbar { width: 4px; }
-        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
 <body oncontextmenu="return false" ondragstart="return false">
